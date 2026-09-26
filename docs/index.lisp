@@ -37,6 +37,7 @@
     (:title "ports-checker — Detect unexpected externally reachable TCP ports"
      :ignore-words ("API"
                     "ASDF"
+                    "CI"
                     "CLI"
                     "GitHub"
                     "HTML"
@@ -68,6 +69,7 @@ A service blocked by an external firewall is therefore not considered
 reachable, even if its process listens on a non-loopback interface. Startup and
 SSH errors cause the command to exit with code `2`.
 """
+  (@rationale section)
   (@requirements section)
   (@installation section)
   (@usage section)
@@ -77,6 +79,27 @@ SSH errors cause the command to exit with code `2`.
   (@api section))
 
 (defsection-copy @readme @index)
+
+(defsection @rationale (:title "Why Not Nmap?")
+  """
+`ports-checker` complements general-purpose port scanners such as `nmap` with
+a narrower, policy-oriented check:
+
+1. **It probes only ports that can actually be open.** Instead of scanning a
+   range, it first obtains the listening TCP ports from the server over SSH and
+   then tests only those ports from the outside.
+2. **It avoids broad scan-like network activity.** In some environments,
+   endpoint protection or network security tooling may classify an `nmap` run
+   as a port-scanning or attack attempt. `ports-checker` performs ordinary SSH
+   access followed by targeted connection attempts, which is less likely to
+   trigger rules intended specifically for broad port scans. These checks are
+   still normal network activity and may remain visible in security logs.
+3. **It checks policy, not just reachability.** `nmap` reports scan results;
+   `ports-checker` compares reachable ports with an explicit allowlist and
+   returns a non-zero exit code when it finds an unauthorized port. This makes
+   it straightforward to use in automated checks, deployment verification, and
+   CI jobs.
+""")
 
 (defsection @requirements (:title "Requirements")
   """
