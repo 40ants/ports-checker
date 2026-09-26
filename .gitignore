@@ -2,3 +2,10 @@
 # APM dependencies
 apm_modules/
 .agents/
+
+# Qlot installs dependencies into this project-local directory.
+.qlot/
+
+# Roswell build artifacts.
+*.fasl
+ports-checker
