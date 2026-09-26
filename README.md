@@ -29,17 +29,26 @@ SSH host key должен уже находиться в `known_hosts`: кома
 
 ## Установка и запуск
 
+Установить готовую команду через Roswell можно непосредственно из GitHub:
+
+```console
+ros install 40ants/ports-checker
+ports-checker --allow 22,80,443 example.com
+```
+
+Для запуска из локальной рабочей копии используются зависимости Qlot:
+
 ```console
 qlot install
-chmod +x ports-checker.ros
-qlot exec ./ports-checker.ros --allow 22,80,443 example.com
+chmod +x roswell/ports-checker.ros
+qlot exec ./roswell/ports-checker.ros --allow 22,80,443 example.com
 ```
 
 Параметр `--allow` (`-a`) принимает список портов через запятую. Отдельно можно
 задать SSH-пользователя и SSH-порт:
 
 ```console
-qlot exec ./ports-checker.ros --ssh-user deploy --ssh-port 2222 \
+qlot exec ./roswell/ports-checker.ros --ssh-user deploy --ssh-port 2222 \
   --allow 2222,443 server.example.com
 ```
 

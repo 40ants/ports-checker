@@ -1,0 +1,18 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- "$0" "$@"
+|#
+
+(ros:ensure-asdf)
+(handler-bind ((warning #'muffle-warning))
+  (asdf:load-system "defmain")
+  (asdf:load-system "ports-checker"))
+
+(uiop:define-package #:ros.script.ports-checker
+  (:use #:cl)
+  (:export #:main))
+(in-package #:ros.script.ports-checker)
+
+(defun main (&rest arguments)
+  (uiop:quit (ports-checker/main:main arguments)))

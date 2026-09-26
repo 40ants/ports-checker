@@ -13,7 +13,7 @@
 - Аргументы CLI описываются через `defmain`; не добавлять собственный цикл
   разбора `argv`.
 - Зависимости управляются Qlot; не редактировать `.qlot/` вручную.
-- CLI запускается как `qlot exec ./ports-checker.ros`.
+- CLI запускается как `qlot exec ./roswell/ports-checker.ros`.
 - Установка зависимостей: `qlot install`.
 - Тесты: `qlot exec ros -Q -e '(asdf:load-asd (truename
   "ports-checker.asd"))' -e '(asdf:test-system "ports-checker")' -q`.
