@@ -3,7 +3,6 @@
 (uiop:define-package #:ports-checker/remote
   (:use #:cl)
   (:export #:discover-ports
-           #:parse-ss-output
            #:remote-command-error
            #:remote-command-error-destination
            #:remote-command-error-status

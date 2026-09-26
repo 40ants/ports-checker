@@ -15,4 +15,4 @@ exec ros -Q -- "$0" "$@"
 (in-package #:ros.script.ports-checker)
 
 (defun main (&rest arguments)
-  (uiop:quit (ports-checker/main:main arguments)))
+  (uiop:quit (ports-checker/main::main arguments)))

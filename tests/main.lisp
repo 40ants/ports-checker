@@ -3,28 +3,24 @@
 (uiop:define-package #:ports-checker-tests/main
   (:use #:cl #:rove)
   (:import-from #:ports-checker/checker
-                #:check-ports)
-  (:import-from #:ports-checker/main
-                #:parse-allowed-ports)
-  (:import-from #:ports-checker/remote
-                #:parse-ss-output))
+                #:check-ports))
 (in-package #:ports-checker-tests/main)
 
 (deftest parse-allowed-ports-test
   (testing "a comma-separated value becomes a unique list of ports"
     (ok (equal '(22 80 443)
-               (parse-allowed-ports "22,80,443,80"))))
+               (ports-checker/main::parse-allowed-ports "22,80,443,80"))))
   (testing "spaces around comma-separated ports are accepted"
     (ok (equal '(22 80 443)
-               (parse-allowed-ports "22, 80, 443"))))
+               (ports-checker/main::parse-allowed-ports "22, 80, 443"))))
   (testing "empty and out-of-range ports are rejected"
-    (signals (parse-allowed-ports "22,,443"))
-    (signals (parse-allowed-ports "70000"))))
+    (signals (ports-checker/main::parse-allowed-ports "22,,443"))
+    (signals (ports-checker/main::parse-allowed-ports "70000"))))
 
 (deftest parse-ss-output-test
   (testing "wildcard and public listeners are returned once"
     (ok (equal '(22 443 8080)
-               (parse-ss-output
+               (ports-checker/remote::parse-ss-output
                 (format nil
                         "LISTEN 0 128 0.0.0.0:22 0.0.0.0:*~%~
                          LISTEN 0 128 [::]:22 [::]:*~%~
@@ -32,7 +28,7 @@
                          LISTEN 0 128 *:8080 *:*~%")))))
   (testing "loopback listeners are omitted"
     (ok (equal nil
-               (parse-ss-output
+               (ports-checker/remote::parse-ss-output
                 (format nil
                         "LISTEN 0 128 127.0.0.1:3000 0.0.0.0:*~%~
                          LISTEN 0 128 127.10.20.30:4000 0.0.0.0:*~%~

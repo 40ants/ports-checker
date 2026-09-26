@@ -4,9 +4,7 @@
                 #:check-ports)
   (:import-from #:ports-checker/remote
                 #:discover-ports)
-  (:import-from #:defmain)
-  (:export #:main
-           #:parse-allowed-ports))
+  (:import-from #:defmain))
 (in-package #:ports-checker/main)
 
 (defparameter +usage+
