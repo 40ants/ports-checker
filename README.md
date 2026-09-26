@@ -1,69 +1,68 @@
 # ports-checker
 
-`ports-checker` проверяет, что после изменения конфигурации или установки ПО на
-сервере не стали доступны лишние TCP-порты. Он не сканирует диапазон портов:
+`ports-checker` verifies that no unexpected TCP ports have become reachable
+after a server configuration change or software installation. It does not scan
+a range of ports. Instead, it:
 
-1. подключается к указанному серверу по SSH;
-2. запускает там `ss -H -lnt` и получает список слушающих TCP-сокетов на
-   wildcard- и внешних интерфейсах;
-3. завершает SSH-соединение;
-4. с локальной машины пробует подключиться только к найденным портам;
-5. завершает работу с кодом `1`, если доступен порт, которого нет в списке
-   разрешённых.
+1. connects to the specified server over SSH;
+2. runs `ss -H -lnt` to obtain the TCP sockets listening on wildcard and
+   non-loopback interfaces;
+3. closes the SSH connection;
+4. attempts to connect from the local machine only to the discovered ports;
+5. exits with code `1` if a reachable port is not on the allowlist.
 
-Таким образом, сервис, закрытый внешним firewall, не считается доступным, даже
-если процесс слушает внешний интерфейс. Ошибки запуска и SSH завершают команду с
-кодом `2`.
+A service blocked by an external firewall is therefore not considered
+reachable, even if its process listens on a non-loopback interface. Startup and
+SSH errors cause the command to exit with code `2`.
 
-## Требования
+## Requirements
 
-- Common Lisp (проект проверяется на SBCL);
+- Common Lisp (the project is tested with SBCL);
 - [Roswell](https://roswell.github.io/);
 - [Qlot](https://github.com/fukamachi/qlot);
-- локальная команда `ssh`;
-- команда `ss` из `iproute2` на проверяемом Linux-сервере;
-- настроенная неинтерактивная SSH-аутентификация.
+- a local `ssh` command;
+- the `ss` command from `iproute2` on the Linux server being checked;
+- configured non-interactive SSH authentication.
 
-SSH host key должен уже находиться в `known_hosts`: команда намеренно не
-принимает неизвестные ключи автоматически.
+The SSH host key must already be present in `known_hosts`. The command
+intentionally does not accept unknown host keys automatically.
 
-## Установка и запуск
+## Installation and Usage
 
-Установить готовую команду через Roswell можно непосредственно из GitHub:
+Install the command directly from GitHub with Roswell:
 
 ```console
 ros install 40ants/ports-checker
 ports-checker --allow 22,80,443 example.com
 ```
 
-Для запуска из локальной рабочей копии используются зависимости Qlot:
+To run the command from a local checkout, install and use the Qlot dependencies:
 
 ```console
 qlot install
-chmod +x roswell/ports-checker.ros
 qlot exec ./roswell/ports-checker.ros --allow 22,80,443 example.com
 ```
 
-Параметр `--allow` (`-a`) принимает список портов через запятую. Отдельно можно
-задать SSH-пользователя и SSH-порт:
+The `--allow` (`-a`) option accepts a comma-separated list of ports. The SSH
+user and SSH port can be specified separately:
 
 ```console
 qlot exec ./roswell/ports-checker.ros --ssh-user deploy --ssh-port 2222 \
   --allow 2222,443 server.example.com
 ```
 
-Таймаут внешней TCP-проверки задаётся через `--timeout`, а таймаут подключения
-SSH — через `--ssh-timeout`. Оба значения указываются в секундах.
+Set the external TCP probe timeout with `--timeout` and the SSH connection
+timeout with `--ssh-timeout`. Both values are specified in seconds.
 
-## Коды завершения
+## Exit Codes
 
-- `0` — доступных неразрешённых портов нет;
-- `1` — доступен хотя бы один неразрешённый порт;
-- `2` — неверные аргументы, ошибка SSH или другая ошибка выполнения.
+- `0` — no unapproved ports are reachable;
+- `1` — at least one unapproved port is reachable;
+- `2` — invalid arguments, an SSH error, or another runtime error.
 
-## Разработка
+## Development
 
-Зависимости проекта зафиксированы Qlot. Тесты написаны с использованием Rove:
+Project dependencies are pinned with Qlot. Tests use Rove:
 
 ```console
 qlot install
@@ -71,13 +70,13 @@ qlot exec ros -Q -e '(asdf:load-asd (truename "ports-checker.asd"))' \
   -e '(asdf:test-system "ports-checker")' -q
 ```
 
-Тесты сетевой логики не требуют настоящего SSH-сервера и не открывают сетевые
-соединения.
+The network-logic tests do not require a real SSH server and do not open actual
+network connections.
 
-## Ограничения первой версии
+## Initial Release Limitations
 
-- проверяются только слушающие TCP-порты;
-- удалённый сервер должен использовать Linux и предоставлять команду `ss`;
-- UDP пока не проверяется;
-- проверка показывает доступность с машины, где запущен `ports-checker`; из
-  другой сети firewall может вести себя иначе.
+- Only listening TCP ports are checked.
+- The remote server must run Linux and provide the `ss` command.
+- UDP is not checked yet.
+- Reachability is tested from the machine running `ports-checker`; a firewall
+  may behave differently for clients on another network.
