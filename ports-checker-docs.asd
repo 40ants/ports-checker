@@ -1,5 +1,6 @@
 (asdf:defsystem "ports-checker-docs"
-  :author "Alexander Artemenko"
+  :author "Alexander Artemenko <svetlyak.40wt@gmail.com>"
+  :license "Unlicense"
   :homepage "https://40ants.com/ports-checker/"
   :description
   "A targeted port checker that finds what’s listening on your servers—and flags what shouldn’t be."

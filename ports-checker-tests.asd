@@ -1,6 +1,8 @@
 (asdf:defsystem "ports-checker-tests"
   :description
   "A targeted port checker that finds what’s listening on your servers—and flags what shouldn’t be."
+  :author "Alexander Artemenko <svetlyak.40wt@gmail.com>"
+  :license "Unlicense"
   :class :40ants-asdf-system
   :defsystem-depends-on ("40ants-asdf-system")
   :pathname "tests"
