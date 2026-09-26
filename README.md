@@ -146,7 +146,7 @@ CL_SOURCE_REGISTRY=$(pwd)/ .qlot/bin/build-docs ports-checker-docs
 
 <a id="x-28-23A-28-2821-29-20BASE-CHAR-20-2E-20-22PORTS-CHECKER-2FCHECKER-22-29-20PACKAGE-29"></a>
 
-#### [package](482c) `ports-checker/checker`
+#### [package](6b7b) `ports-checker/checker`
 
 <a id="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FCHECKER-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -154,7 +154,7 @@ CL_SOURCE_REGISTRY=$(pwd)/ .qlot/bin/build-docs ports-checker-docs
 
 <a id="x-28PORTS-CHECKER-2FCHECKER-3ACHECK-PORTS-20FUNCTION-29"></a>
 
-##### [function](b3f2) `ports-checker/checker:check-ports` host discovered-ports allowed-ports &key (timeout 3) (probe-function #'probe-port)
+##### [function](00d2) `ports-checker/checker:check-ports` host discovered-ports allowed-ports &key (timeout 3) (probe-function #'probe-port)
 
 Return unexpected reachable ports among `DISCOVERED-PORTS` on `HOST`.
 
@@ -163,7 +163,7 @@ Return unexpected reachable ports among `DISCOVERED-PORTS` on `HOST`.
 
 <a id="x-28PORTS-CHECKER-2FCHECKER-3APROBE-PORT-20FUNCTION-29"></a>
 
-##### [function](5e10) `ports-checker/checker:probe-port` host port &key (timeout 3)
+##### [function](e96e) `ports-checker/checker:probe-port` host port &key (timeout 3)
 
 Return true when a `TCP` connection to `HOST` and `PORT` succeeds within `TIMEOUT`.
 
@@ -173,7 +173,7 @@ Return true when a `TCP` connection to `HOST` and `PORT` succeeds within `TIMEOU
 
 <a id="x-28-23A-28-2818-29-20BASE-CHAR-20-2E-20-22PORTS-CHECKER-2FMAIN-22-29-20PACKAGE-29"></a>
 
-#### [package](99c5) `ports-checker/main`
+#### [package](ddec) `ports-checker/main`
 
 <a id="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FMAIN-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -181,13 +181,13 @@ Return true when a `TCP` connection to `HOST` and `PORT` succeeds within `TIMEOU
 
 <a id="x-28PORTS-CHECKER-2FMAIN-3AMAIN-20FUNCTION-29"></a>
 
-##### [function](32dc) `ports-checker/main:main` &optional (arguments (uiop/image:command-line-arguments))
+##### [function](b3bd) `ports-checker/main:main` &optional (arguments (uiop/image:command-line-arguments))
 
 Run ports-checker with `ARGUMENTS` and return a process exit code.
 
 <a id="x-28PORTS-CHECKER-2FMAIN-3APARSE-ALLOWED-PORTS-20FUNCTION-29"></a>
 
-##### [function](f759) `ports-checker/main:parse-allowed-ports` value
+##### [function](e125) `ports-checker/main:parse-allowed-ports` value
 
 Parse comma-separated allowed ports from `VALUE` and return unique integers.
 
@@ -197,7 +197,7 @@ Parse comma-separated allowed ports from `VALUE` and return unique integers.
 
 <a id="x-28-23A-28-2820-29-20BASE-CHAR-20-2E-20-22PORTS-CHECKER-2FREMOTE-22-29-20PACKAGE-29"></a>
 
-#### [package](2d41) `ports-checker/remote`
+#### [package](4f4b) `ports-checker/remote`
 
 <a id="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FREMOTE-3FClasses-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -209,7 +209,7 @@ Parse comma-separated allowed ports from `VALUE` and return unique integers.
 
 <a id="x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-20CONDITION-29"></a>
 
-###### [condition](36ad) `ports-checker/remote:remote-command-error` (error)
+###### [condition](94d1) `ports-checker/remote:remote-command-error` (error)
 
 An error reported when remote listener discovery over `SSH` fails.
 
@@ -217,15 +217,15 @@ An error reported when remote listener discovery over `SSH` fails.
 
 <a id="x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-DESTINATION-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-29-29"></a>
 
-###### [reader](36ad) `ports-checker/remote:remote-command-error-destination` (remote-command-error) (:destination)
+###### [reader](94d1) `ports-checker/remote:remote-command-error-destination` (remote-command-error) (:destination)
 
 <a id="x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-STATUS-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-29-29"></a>
 
-###### [reader](36ad) `ports-checker/remote:remote-command-error-status` (remote-command-error) (:status)
+###### [reader](94d1) `ports-checker/remote:remote-command-error-status` (remote-command-error) (:status)
 
 <a id="x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-STDERR-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-29-29"></a>
 
-###### [reader](36ad) `ports-checker/remote:remote-command-error-stderr` (remote-command-error) (:stderr)
+###### [reader](94d1) `ports-checker/remote:remote-command-error-stderr` (remote-command-error) (:stderr)
 
 <a id="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FREMOTE-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -233,7 +233,7 @@ An error reported when remote listener discovery over `SSH` fails.
 
 <a id="x-28PORTS-CHECKER-2FREMOTE-3ADISCOVER-PORTS-20FUNCTION-29"></a>
 
-##### [function](7577) `ports-checker/remote:discover-ports` destination &key ssh-user ssh-port (connect-timeout 10)
+##### [function](3daa) `ports-checker/remote:discover-ports` destination &key ssh-user ssh-port (connect-timeout 10)
 
 Return externally bound `TCP` ports reported by `DESTINATION` over `SSH`.
 
@@ -242,7 +242,7 @@ passed to Open`SSH`.  Authentication is deliberately non-interactive.
 
 <a id="x-28PORTS-CHECKER-2FREMOTE-3APARSE-SS-OUTPUT-20FUNCTION-29"></a>
 
-##### [function](1efa) `ports-checker/remote:parse-ss-output` output
+##### [function](2274) `ports-checker/remote:parse-ss-output` output
 
 Return sorted unique `TCP` ports bound to wildcard or non-loopback addresses.
 
@@ -251,16 +251,16 @@ Return sorted unique `TCP` ports bound to wildcard or non-loopback addresses.
 
 [74ae]: https://40ants.com/ports-checker/
 [4413]: https://github.com/40ants/ports-checker
-[5e10]: https://github.com/40ants/ports-checker/blob/877d883c789679fef07cebbe583bd2d48ec96385/src/checker.lisp#L12
-[b3f2]: https://github.com/40ants/ports-checker/blob/877d883c789679fef07cebbe583bd2d48ec96385/src/checker.lisp#L24
-[482c]: https://github.com/40ants/ports-checker/blob/877d883c789679fef07cebbe583bd2d48ec96385/src/checker.lisp#L3
-[99c5]: https://github.com/40ants/ports-checker/blob/877d883c789679fef07cebbe583bd2d48ec96385/src/main.lisp#L3
-[f759]: https://github.com/40ants/ports-checker/blob/877d883c789679fef07cebbe583bd2d48ec96385/src/main.lisp#L44
-[32dc]: https://github.com/40ants/ports-checker/blob/877d883c789679fef07cebbe583bd2d48ec96385/src/main.lisp#L99
-[36ad]: https://github.com/40ants/ports-checker/blob/877d883c789679fef07cebbe583bd2d48ec96385/src/remote.lisp#L13
-[2d41]: https://github.com/40ants/ports-checker/blob/877d883c789679fef07cebbe583bd2d48ec96385/src/remote.lisp#L3
-[1efa]: https://github.com/40ants/ports-checker/blob/877d883c789679fef07cebbe583bd2d48ec96385/src/remote.lisp#L62
-[7577]: https://github.com/40ants/ports-checker/blob/877d883c789679fef07cebbe583bd2d48ec96385/src/remote.lisp#L78
+[e96e]: https://github.com/40ants/ports-checker/blob/60b4450237b76f9a123d12d77c0f38e6a7c9a041/src/checker.lisp#L12
+[00d2]: https://github.com/40ants/ports-checker/blob/60b4450237b76f9a123d12d77c0f38e6a7c9a041/src/checker.lisp#L24
+[6b7b]: https://github.com/40ants/ports-checker/blob/60b4450237b76f9a123d12d77c0f38e6a7c9a041/src/checker.lisp#L3
+[ddec]: https://github.com/40ants/ports-checker/blob/60b4450237b76f9a123d12d77c0f38e6a7c9a041/src/main.lisp#L1
+[e125]: https://github.com/40ants/ports-checker/blob/60b4450237b76f9a123d12d77c0f38e6a7c9a041/src/main.lisp#L43
+[b3bd]: https://github.com/40ants/ports-checker/blob/60b4450237b76f9a123d12d77c0f38e6a7c9a041/src/main.lisp#L98
+[94d1]: https://github.com/40ants/ports-checker/blob/60b4450237b76f9a123d12d77c0f38e6a7c9a041/src/remote.lisp#L13
+[4f4b]: https://github.com/40ants/ports-checker/blob/60b4450237b76f9a123d12d77c0f38e6a7c9a041/src/remote.lisp#L3
+[2274]: https://github.com/40ants/ports-checker/blob/60b4450237b76f9a123d12d77c0f38e6a7c9a041/src/remote.lisp#L62
+[3daa]: https://github.com/40ants/ports-checker/blob/60b4450237b76f9a123d12d77c0f38e6a7c9a041/src/remote.lisp#L78
 [dcf5]: https://github.com/40ants/ports-checker/issues
 [e3ea]: https://github.com/fukamachi/qlot
 [3266]: https://quickdocs.org/defmain
