@@ -1,11 +1,10 @@
-;;;; Command-line interface.
-
 (uiop:define-package #:ports-checker/main
   (:use #:cl)
   (:import-from #:ports-checker/checker
                 #:check-ports)
   (:import-from #:ports-checker/remote
                 #:discover-ports)
+  (:import-from #:defmain)
   (:export #:main
            #:parse-allowed-ports))
 (in-package #:ports-checker/main)
