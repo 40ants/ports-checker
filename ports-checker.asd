@@ -4,5 +4,6 @@
   :version "0.1.0"
   :class :package-inferred-system
   :pathname "src"
-  :depends-on ("ports-checker/main")
+  :depends-on ("defmain"
+               "ports-checker/main")
   :in-order-to ((test-op (test-op "ports-checker-tests"))))

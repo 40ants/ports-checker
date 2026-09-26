@@ -32,15 +32,15 @@ SSH host key должен уже находиться в `known_hosts`: кома
 ```console
 qlot install
 chmod +x ports-checker.ros
-qlot exec ./ports-checker.ros --allow 22 --allow 443 example.com
+qlot exec ./ports-checker.ros --allow 22,80,443 example.com
 ```
 
-Параметр `--allow` (`-a`) можно указывать несколько раз. Отдельно можно задать
-SSH-пользователя и SSH-порт:
+Параметр `--allow` (`-a`) принимает список портов через запятую. Отдельно можно
+задать SSH-пользователя и SSH-порт:
 
 ```console
 qlot exec ./ports-checker.ros --ssh-user deploy --ssh-port 2222 \
-  --allow 2222 --allow 443 server.example.com
+  --allow 2222,443 server.example.com
 ```
 
 Таймаут внешней TCP-проверки задаётся через `--timeout`, а таймаут подключения

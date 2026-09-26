@@ -6,16 +6,17 @@
                 #:check-ports)
   (:import-from #:ports-checker/remote
                 #:discover-ports)
-  (:export #:main))
+  (:export #:main
+           #:parse-allowed-ports))
 (in-package #:ports-checker/main)
 
 (defparameter +usage+
   "Usage: ports-checker [options] HOST
 
-Check TCP ports reported by HOST and fail if an unapproved port is reachable.
+Check remote TCP listeners and fail if an unapproved port is reachable.
 
 Options:
-  -a, --allow PORT       Allow PORT (repeatable)
+  -a, --allow PORTS      Allowed TCP ports separated by commas
   -u, --ssh-user USER    SSH user
   -p, --ssh-port PORT    SSH port
       --ssh-timeout SEC  SSH connection timeout (default: 10)
@@ -40,90 +41,65 @@ Options:
              :message (format nil "~A expects an integer from 1 to ~D, got ~S"
                               option maximum value)))))
 
-(defun %option-value (arguments option)
-  (unless (rest arguments)
-    (error 'command-line-error
-           :message (format nil "~A requires a value" option)))
-  (second arguments))
+(defun parse-allowed-ports (value)
+  "Parse comma-separated allowed ports from VALUE and return unique integers."
+  (when value
+    (remove-duplicates
+     (loop for item in (uiop:split-string value :separator '(#\,))
+           for port = (string-trim '(#\Space #\Tab) item)
+           when (zerop (length port))
+             do (error 'command-line-error
+                       :message (format nil "--allow contains an empty port: ~S" value))
+           collect (%bounded-positive-integer port "--allow" 65535))
+     :from-end t)))
 
-(defun %parse-arguments (arguments)
-  (loop with allowed-ports = nil
-        with ssh-user = nil
-        with ssh-port = nil
-        with ssh-timeout = 10
-        with timeout = 3
-        with host = nil
-        while arguments
-        for argument = (pop arguments)
-        do (cond
-             ((member argument '("-h" "--help") :test #'string=)
-              (return (list :help t)))
-             ((member argument '("-a" "--allow") :test #'string=)
-              (let ((value (%option-value (cons argument arguments) argument)))
-                (pop arguments)
-                (push (%bounded-positive-integer value argument 65535) allowed-ports)))
-             ((member argument '("-u" "--ssh-user") :test #'string=)
-              (setf ssh-user (%option-value (cons argument arguments) argument))
-              (pop arguments))
-             ((member argument '("-p" "--ssh-port") :test #'string=)
-              (let ((value (%option-value (cons argument arguments) argument)))
-                (pop arguments)
-                (setf ssh-port (%bounded-positive-integer value argument 65535))))
-             ((string= argument "--ssh-timeout")
-              (let ((value (%option-value (cons argument arguments) argument)))
-                (pop arguments)
-                (setf ssh-timeout
-                      (%bounded-positive-integer value argument most-positive-fixnum))))
-             ((member argument '("-t" "--timeout") :test #'string=)
-              (let ((value (%option-value (cons argument arguments) argument)))
-                (pop arguments)
-                (setf timeout
-                      (%bounded-positive-integer value argument most-positive-fixnum))))
-             ((and (plusp (length argument))
-                   (char= (char argument 0) #\-))
-              (error 'command-line-error
-                     :message (format nil "Unknown option: ~A" argument)))
-             (host
-              (error 'command-line-error
-                     :message (format nil "Unexpected argument: ~A" argument)))
-             (t
-              (setf host argument)))
-        finally
-           (unless host
-             (error 'command-line-error :message "HOST is required"))
-           (return (list :host host
-                         :allowed-ports allowed-ports
-                         :ssh-user ssh-user
-                         :ssh-port ssh-port
-                         :ssh-timeout ssh-timeout
-                         :timeout timeout))))
+(defmain:defmain (%run :program-name "ports-checker")
+    ((help "Show help on this program." :flag t :short "h")
+     (allow "Allowed TCP ports separated by commas." :short "a")
+     (ssh-user "SSH user." :short "u")
+     (ssh-port "SSH port." :short "p")
+     (ssh-timeout "SSH connection timeout in seconds." :short nil :default "10")
+     (timeout "TCP probe timeout in seconds." :short "t" :default "3")
+     &rest hosts
+     :catch-errors nil)
+  "Check remote TCP listeners and fail if an unapproved port is reachable."
+  (when help
+    (format t "~A~%" +usage+)
+    (return-from %run 0))
+  (unless (= (length hosts) 1)
+    (error 'command-line-error
+           :message "Exactly one HOST argument is required"))
+  (let* ((host (first hosts))
+         (allowed-ports (parse-allowed-ports allow))
+         (parsed-ssh-port (when ssh-port
+                            (%bounded-positive-integer ssh-port "--ssh-port" 65535)))
+         (parsed-ssh-timeout
+           (%bounded-positive-integer ssh-timeout "--ssh-timeout" most-positive-fixnum))
+         (parsed-timeout
+           (%bounded-positive-integer timeout "--timeout" most-positive-fixnum))
+         (ports (discover-ports host
+                                :ssh-user ssh-user
+                                :ssh-port parsed-ssh-port
+                                :connect-timeout parsed-ssh-timeout))
+         (unexpected (check-ports host
+                                  ports
+                                  allowed-ports
+                                  :timeout parsed-timeout)))
+    (if unexpected
+        (progn
+          (dolist (port unexpected)
+            (format *error-output*
+                    "ERROR: unapproved TCP port ~D is reachable on ~A~%"
+                    port host))
+          1)
+        (progn
+          (format t "OK: no unapproved TCP ports are reachable on ~A~%" host)
+          0))))
 
 (defun main (&optional (arguments (uiop:command-line-arguments)))
   "Run ports-checker with ARGUMENTS and return a process exit code."
   (handler-case
-      (let ((options (%parse-arguments arguments)))
-        (when (getf options :help)
-          (format t "~A~%" +usage+)
-          (return-from main 0))
-        (let* ((host (getf options :host))
-               (ports (discover-ports host
-                                      :ssh-user (getf options :ssh-user)
-                                      :ssh-port (getf options :ssh-port)
-                                      :connect-timeout (getf options :ssh-timeout)))
-               (unexpected (check-ports host
-                                        ports
-                                        (getf options :allowed-ports)
-                                        :timeout (getf options :timeout))))
-          (if unexpected
-              (progn
-                (dolist (port unexpected)
-                  (format *error-output*
-                          "ERROR: unapproved TCP port ~D is reachable on ~A~%"
-                          port host))
-                1)
-              (progn
-                (format t "OK: no unapproved TCP ports are reachable on ~A~%" host)
-                0))))
+      (apply #'%run arguments)
     (error (condition)
       (format *error-output* "ERROR: ~A~%" condition)
       2)))

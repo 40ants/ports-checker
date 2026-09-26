@@ -4,9 +4,22 @@
   (:use #:cl #:rove)
   (:import-from #:ports-checker/checker
                 #:check-ports)
+  (:import-from #:ports-checker/main
+                #:parse-allowed-ports)
   (:import-from #:ports-checker/remote
                 #:parse-ss-output))
 (in-package #:ports-checker-tests/main)
+
+(deftest parse-allowed-ports-test
+  (testing "a comma-separated value becomes a unique list of ports"
+    (ok (equal '(22 80 443)
+               (parse-allowed-ports "22,80,443,80"))))
+  (testing "spaces around comma-separated ports are accepted"
+    (ok (equal '(22 80 443)
+               (parse-allowed-ports "22, 80, 443"))))
+  (testing "empty and out-of-range ports are rejected"
+    (signals (parse-allowed-ports "22,,443"))
+    (signals (parse-allowed-ports "70000"))))
 
 (deftest parse-ss-output-test
   (testing "wildcard and public listeners are returned once"
