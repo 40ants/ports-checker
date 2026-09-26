@@ -17,6 +17,8 @@ reachable unapproved port must cause the command to exit with code `1`.
 - Install dependencies with `qlot install`.
 - Run tests with `qlot exec ros -Q -e '(asdf:load-asd (truename
   "ports-checker.asd"))' -e '(asdf:test-system "ports-checker")' -q`.
+- Build documentation with `CL_SOURCE_REGISTRY=$(pwd)/ .qlot/bin/build-docs
+  ports-checker-docs`.
 
 ## Development Rules
 
@@ -26,6 +28,10 @@ reachable unapproved port must cause the command to exit with code `1`.
   explicitly.
 - Give public functions docstrings and keep lines at or below 100 characters.
 - Write tests with Rove and place them under `tests/`.
+- Treat `docs/index.lisp` and `docs/changelog.lisp` as documentation sources.
+  `README.md` and `ChangeLog.md` are generated; do not edit them manually.
+- Rebuild documentation after changing docs or public API docstrings, and fix
+  every documentation warning before finishing.
 - Do not replace targeted checks with a full scan or add `nmap`.
 - Do not start external port checks until the SSH command has completed.
 - Do not suppress SSH errors: an infrastructure failure must make the CLI exit

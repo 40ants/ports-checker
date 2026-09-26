@@ -9,3 +9,6 @@ apm_modules/
 # Roswell build artifacts.
 *.fasl
 ports-checker
+
+# Generated documentation site.
+/docs/build/

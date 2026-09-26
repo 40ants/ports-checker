@@ -4,13 +4,17 @@
   (:use #:cl)
   (:export #:discover-ports
            #:parse-ss-output
-           #:remote-command-error))
+           #:remote-command-error
+           #:remote-command-error-destination
+           #:remote-command-error-status
+           #:remote-command-error-stderr))
 (in-package #:ports-checker/remote)
 
 (define-condition remote-command-error (error)
   ((destination :initarg :destination :reader remote-command-error-destination)
    (status :initarg :status :reader remote-command-error-status)
    (stderr :initarg :stderr :reader remote-command-error-stderr))
+  (:documentation "An error reported when remote listener discovery over SSH fails.")
   (:report (lambda (condition stream)
              (format stream "Unable to inspect ~A over SSH (exit ~D): ~A"
                      (remote-command-error-destination condition)
