@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<rss version="2.0">
+    <channel>
+        <title>ports-checker-docs ChangeLog</title>
+        <link>https://40ants.com/ports-checker/</link>
+        <generator>xml-emitter</generator>
+        <language>en-us</language>
+        <item>
+            <title>0.1.0  (2026-09-26)</title>
+            <description>&lt;ul&gt;&lt;li&gt;&lt;p&gt;Added discovery of non-loopback &lt;code&gt;TCP&lt;/code&gt; listeners over &lt;code&gt;SSH&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Added external reachability checks for discovered ports.&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;Added comma-separated allowlists and meaningful process exit codes.&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</description>
+            <pubDate>Sat, 26 Sep 2026 00:00:00 +0000</pubDate>
+        </item>
+    </channel>
+</rss>

@@ -1,0 +1,325 @@
+<html lang=en>
+ <head>
+  <meta charset=UTF-8><meta name=viewport
+      content="width=device-width, initial-scale=1">
+  <title>ports-checker — Detect unexpected externally reachable TCP ports</title>
+  <link rel=alternate
+        href="https://40ants.com/ports-checker/changelog.xml"
+        type="application/rss+xml">
+  <link rel=stylesheet type="text/css"
+        href=theme.css>
+  <script type="text/javascript" src=jquery.js></script>
+  <script type="text/javascript" src=toc.js></script>
+  <script type="text/javascript">$(document).ready(function() {$('a:has(img)').css('border-bottom', 'none')})</script>
+  <link rel=stylesheet type="text/css"
+      href=highlight.min.css>
+  <script type="text/javascript"
+          src=highlight.min.js></script>
+  <script type="text/javascript">hljs.highlightAll();</script>
+<style type="text/css">
+/* Стили для сворачиваемого меню */
+.sidebar ul ul {
+  display: none; /* Скрываем все подменю по умолчанию */
+  margin-left: 0.5em;
+}
+
+.sidebar li.expanded > ul {
+  display: block; /* Показываем подменю для развернутых элементов */
+}
+
+/* Стили для пунктов с подменю */
+.sidebar li.has-children > a {
+  cursor: pointer;
+  position: relative;
+  padding-left: 1.2em;
+}
+
+.sidebar li.has-children > p > a {
+  position: relative;
+  left: -1rem;
+}
+
+.sidebar li.has-children > p > a::before {
+  content:"►";
+}
+
+.sidebar li.has-children.expanded > p > a::before {
+  content: "▼";
+  position: relative;
+  left: -0.08rem;
+}
+
+/* Подсветка активного пункта */
+.sidebar li.active > a {
+  font-weight: bold;
+}
+
+/* Если активная страница находится в подменю, раскрываем родителя */
+.sidebar li.active-parent {
+  font-weight: normal;
+}
+
+.sidebar li.active-parent > ul {
+  display: block;
+}
+</style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FL71WXK73K"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-FL71WXK73K');
+    </script>
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+       m[i].l=1*new Date();
+       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+       ym(42462884, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true
+       });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/42462884" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+
+ </head>
+ <body>
+  <div class=page><a id=fork-me href="https://github.com/40ants/ports-checker">Fork me on GitHub</a>
+   <div class=navbar>
+    <div class=navbar-inner>
+     <a class=brand href="/">
+      <img class=logo
+           src="https://40ants.com/img/logo.svg"></a>
+     <ul class=nav>
+      <li><a href="/posts/">Blog</a>
+      <li><a href="/ru/posts/">Blog (RU)</a>
+      <li><a href="/tips/">Lisp Tips</a>
+      <li><a href="/projects/">Our Projects</a>
+      <li><a href="/about/">About</a>
+     </ul>
+    </div>
+   </div>
+   <input type=checkbox id=sidebar-check>
+   <label for=sidebar-check>
+    <div id=sidebar-trigger>
+     <span></span><span></span><span></span>
+    </div></label><div class=sidebar><div class=header><form class=search method=GET action="search/">
+      <input type=text name=q>
+      <input type=submit value=Search><span id=search-progress></span>
+     </form>
+    </div><div class=content><div class=page-toc><ul><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-40INDEX-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-40INDEX-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">ports-checker — Detect unexpected externally reachable TCP ports</a></p><ul><li><p><a href="#ports-checker-asdf-system-details" data-document="" data-node="ports-checker-asdf-system-details">PORTS-CHECKER ASDF System Details</a></p></li><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40RATIONALE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40RATIONALE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">Why Not Nmap?</a></p></li><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40REQUIREMENTS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40REQUIREMENTS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">Requirements</a></p></li><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40INSTALLATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40INSTALLATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">Installation</a></p></li><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40USAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40USAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">Usage</a></p></li><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40EXIT-CODES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40EXIT-CODES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">Exit Codes</a></p></li><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40DEVELOPMENT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40DEVELOPMENT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">Development</a></p></li><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40LIMITATIONS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40LIMITATIONS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">Initial Release Limitations</a></p></li><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40API-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40API-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">API</a></p><ul><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40PORTS-CHECKER-2FCHECKER-3FPACKAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40PORTS-CHECKER-2FCHECKER-3FPACKAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">PORTS-CHECKER/CHECKER</a></p><ul><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FCHECKER-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FCHECKER-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">Functions</a></p></li></ul></li><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40PORTS-CHECKER-2FREMOTE-3FPACKAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40PORTS-CHECKER-2FREMOTE-3FPACKAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">PORTS-CHECKER/REMOTE</a></p><ul><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FREMOTE-3FClasses-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FREMOTE-3FClasses-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">Classes</a></p><ul><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40PORTS-CHECKER-2FREMOTE-24REMOTE-COMMAND-ERROR-3FCLASS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40PORTS-CHECKER-2FREMOTE-24REMOTE-COMMAND-ERROR-3FCLASS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">REMOTE-COMMAND-ERROR</a></p></li></ul></li><li><p><a href="#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FREMOTE-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="" data-node="x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FREMOTE-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">Functions</a></p></li></ul></li></ul></li></ul></li><li><p><a href="changelog/#x-28PORTS-CHECKER-DOCS-2FCHANGELOG-3A-40CHANGELOG-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29" data-document="changelog/" data-node="x-28PORTS-CHECKER-DOCS-2FCHANGELOG-3A-40CHANGELOG-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29">ChangeLog</a></p></li></ul>
+     </div>
+    </div><div class=footer>
+     <a href="https://40ants.com/doc">[generated by 40ANTS-DOC]</a>
+    </div>
+   </div><div class=content role=main><h1>ports-checker — Detect unexpected externally reachable TCP ports<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-40INDEX-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-40INDEX-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h1><h2 id="ports-checker-asdf-system-details">PORTS-CHECKER ASDF System Details</h2><ul><li><p>Description: A targeted port checker that finds what’s listening on your servers—and flags what shouldn’t be.</p></li><li><p>Licence: Unlicense</p></li><li><p>Author: Alexander Artemenko &lt;svetlyak.40wt@gmail.com&gt;</p></li><li><p>Homepage: <a href="https://40ants.com/ports-checker/">https://40ants.com/ports-checker/</a></p></li><li><p>Bug tracker: <a href="https://github.com/40ants/ports-checker/issues">https://github.com/40ants/ports-checker/issues</a></p></li><li><p>Source control: <a href="https://github.com/40ants/ports-checker">GIT</a></p></li><li><p>Depends on: <a href="https://quickdocs.org/defmain">defmain</a>, <a href="https://quickdocs.org/usocket">usocket</a></p></li></ul><p><code>ports-checker</code> verifies that no unexpected <code>TCP</code> ports have become reachable
+after a server configuration change or software installation. It does not scan
+a range of ports. Instead, it:</p><ol><li><p>connects to the specified server over <code>SSH</code>;</p></li><li><p>runs <code>ss -H -lnt</code> to obtain the <code>TCP</code> sockets listening on wildcard and
+   non-loopback interfaces;</p></li><li><p>closes the <code>SSH</code> connection;</p></li><li><p>attempts to connect from the local machine only to the discovered ports;</p></li><li><p>exits with code <code>1</code> if a reachable port is not on the allowlist.</p></li></ol><p>A service blocked by an external firewall is therefore not considered
+reachable, even if its process listens on a non-loopback interface. Startup and
+<code>SSH</code> errors cause the command to exit with code <code>2</code>.</p><h2>Why Not Nmap?<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40RATIONALE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40RATIONALE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h2><p><code>ports-checker</code> complements general-purpose port scanners such as <code>nmap</code> with
+a narrower, policy-oriented check:</p><ol><li><p><b>It probes only ports that can actually be open.</b> Instead of scanning a
+   range, it first obtains the listening <code>TCP</code> ports from the server over <code>SSH</code> and
+   then tests only those ports from the outside.</p></li><li><p><b>It avoids broad scan-like network activity.</b> In some environments,
+   endpoint protection or network security tooling may classify an <code>nmap</code> run
+   as a port-scanning or attack attempt. <code>ports-checker</code> performs ordinary <code>SSH</code>
+   access followed by targeted connection attempts, which is less likely to
+   trigger rules intended specifically for broad port scans. These checks are
+   still normal network activity and may remain visible in security logs.</p></li><li><p><b>It checks policy, not just reachability.</b> <code>nmap</code> reports scan results;
+   <code>ports-checker</code> compares reachable ports with an explicit allowlist and
+   returns a non-zero exit code when it finds an unauthorized port. This makes
+   it straightforward to use in automated checks, deployment verification, and
+   <code>CI</code> jobs.</p></li></ol><h2>Requirements<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40REQUIREMENTS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40REQUIREMENTS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h2><ul><li><p>Common Lisp (the project is tested with <code>SBCL</code>);</p></li><li><p><a href="https://roswell.github.io/">Roswell</a>;</p></li><li><p><a href="https://github.com/fukamachi/qlot">Qlot</a>;</p></li><li><p>a local <code>ssh</code> command;</p></li><li><p>the <code>ss</code> command from <code>iproute2</code> on the Linux server being checked;</p></li><li><p>configured non-interactive <code>SSH</code> authentication.</p></li></ul><p>The <code>SSH</code> host key must already be present in <code>known_hosts</code>. The command
+intentionally does not accept unknown host keys automatically.</p><h2>Installation<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40INSTALLATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40INSTALLATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h2><p>Install the command directly from GitHub with Roswell:</p><pre><code class="console">ros install 40ants/ports-checker
+ports-checker --allow 22,80,443 example.com</code></pre><p>To run the command from a local checkout, install and use the Qlot dependencies:</p><pre><code class="console">qlot install
+chmod +x roswell/ports-checker.ros
+qlot exec ./roswell/ports-checker.ros --allow 22,80,443 example.com</code></pre><h2>Usage<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40USAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40USAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h2><p>The <code>--allow</code> (<code>-a</code>) option accepts a comma-separated list of ports. The <code>SSH</code>
+user and <code>SSH</code> port can be specified separately:</p><pre><code class="console">qlot exec ./roswell/ports-checker.ros --ssh-user deploy --ssh-port 2222 \
+  --allow 2222,443 server.example.com</code></pre><p>Set the external <code>TCP</code> probe timeout with <code>--timeout</code> and the <code>SSH</code> connection
+timeout with <code>--ssh-timeout</code>. Both values are specified in seconds.</p><h2>Exit Codes<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40EXIT-CODES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40EXIT-CODES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h2><ul><li><p><code>0</code> — no unapproved ports are reachable;</p></li><li><p><code>1</code> — at least one unapproved port is reachable;</p></li><li><p><code>2</code> — invalid arguments, an <code>SSH</code> error, or another runtime error.</p></li></ul><h2>Development<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40DEVELOPMENT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40DEVELOPMENT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h2><p>Project dependencies are pinned with Qlot. Tests use Rove:</p><pre><code class="console">qlot install
+qlot exec ros -Q -e '(asdf:load-asd (truename &quot;ports-checker.asd&quot;))' \
+  -e '(asdf:test-system &quot;ports-checker&quot;)' -q</code></pre><p>The network-logic tests do not require a real <code>SSH</code> server and do not open actual
+network connections.</p><p>Install the project-local documentation builder once, then regenerate
+<code>README.md</code>, <code>ChangeLog.md</code>, and the <code>HTML</code> site after changing documentation or
+public <code>API</code> docstrings:</p><pre><code class="console">qlot exec ros install 40ants/docs-builder
+CL_SOURCE_REGISTRY=$(pwd)/ .qlot/bin/build-docs ports-checker-docs</code></pre><h2>Initial Release Limitations<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40LIMITATIONS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40LIMITATIONS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h2><ul><li><p>Only listening <code>TCP</code> ports are checked.</p></li><li><p>The remote server must run Linux and provide the <code>ss</code> command.</p></li><li><p><code>UDP</code> is not checked yet.</p></li><li><p>Reachability is tested from the machine running <code>ports-checker</code>; a firewall
+  may behave differently for clients on another network.</p></li></ul><h2>API<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40API-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40API-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h2><h3>PORTS-CHECKER/CHECKER<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40PORTS-CHECKER-2FCHECKER-3FPACKAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40PORTS-CHECKER-2FCHECKER-3FPACKAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h3><div class=reference-bullet><div class=reference-bullet-header><a class=locative-type href="https://github.com/40ants/ports-checker/blob/864af924098ebe85b38a0b28b10c001f23d01cdb/src/checker.lisp#L3">package</a><div class=reference-object><div class=object-name><a href=#x-28-23A-28-2821-29-20BASE-CHAR-20-2E-20-22PORTS-CHECKER-2FCHECKER-22-29-20PACKAGE-29 id=x-28-23A-28-2821-29-20BASE-CHAR-20-2E-20-22PORTS-CHECKER-2FCHECKER-22-29-20PACKAGE-29>ports-checker/checker</a></div></div><a class=bullet-link href=#x-28-23A-28-2821-29-20BASE-CHAR-20-2E-20-22PORTS-CHECKER-2FCHECKER-22-29-20PACKAGE-29></a></div></div><h4>Functions<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FCHECKER-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FCHECKER-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h4><div class=reference-bullet><div class=reference-bullet-header><a class=locative-type href="https://github.com/40ants/ports-checker/blob/864af924098ebe85b38a0b28b10c001f23d01cdb/src/checker.lisp#L24">function</a><div class=reference-object><div class=object-name><a href=#x-28PORTS-CHECKER-2FCHECKER-3ACHECK-PORTS-20FUNCTION-29 id=x-28PORTS-CHECKER-2FCHECKER-3ACHECK-PORTS-20FUNCTION-29>ports-checker/checker:check-ports</a></div><div class=object-args><span class=locative-args>host discovered-ports allowed-ports &amp;key (timeout 3) (probe-function #&#39;probe-port)</span></div></div><a class=bullet-link href=#x-28PORTS-CHECKER-2FCHECKER-3ACHECK-PORTS-20FUNCTION-29></a></div><div class=bullet-content><p>Return unexpected reachable ports among <code>DISCOVERED-PORTS</code> on <code>HOST</code>.</p><p><code>ALLOWED-PORTS</code> are never probed.  <code>PROBE-FUNCTION</code> accepts <code>HOST</code> and <code>PORT</code> plus a
+<code>TIMEOUT</code> keyword, which makes the network boundary replaceable in tests.</p></div></div><div class=reference-bullet><div class=reference-bullet-header><a class=locative-type href="https://github.com/40ants/ports-checker/blob/864af924098ebe85b38a0b28b10c001f23d01cdb/src/checker.lisp#L12">function</a><div class=reference-object><div class=object-name><a href=#x-28PORTS-CHECKER-2FCHECKER-3APROBE-PORT-20FUNCTION-29 id=x-28PORTS-CHECKER-2FCHECKER-3APROBE-PORT-20FUNCTION-29>ports-checker/checker:probe-port</a></div><div class=object-args><span class=locative-args>host port &amp;key (timeout 3)</span></div></div><a class=bullet-link href=#x-28PORTS-CHECKER-2FCHECKER-3APROBE-PORT-20FUNCTION-29></a></div><div class=bullet-content><p>Return true when a <code>TCP</code> connection to <code>HOST</code> and <code>PORT</code> succeeds within <code>TIMEOUT</code>.</p></div></div><h3>PORTS-CHECKER/REMOTE<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40PORTS-CHECKER-2FREMOTE-3FPACKAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40PORTS-CHECKER-2FREMOTE-3FPACKAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h3><div class=reference-bullet><div class=reference-bullet-header><a class=locative-type href="https://github.com/40ants/ports-checker/blob/864af924098ebe85b38a0b28b10c001f23d01cdb/src/remote.lisp#L3">package</a><div class=reference-object><div class=object-name><a href=#x-28-23A-28-2820-29-20BASE-CHAR-20-2E-20-22PORTS-CHECKER-2FREMOTE-22-29-20PACKAGE-29 id=x-28-23A-28-2820-29-20BASE-CHAR-20-2E-20-22PORTS-CHECKER-2FREMOTE-22-29-20PACKAGE-29>ports-checker/remote</a></div></div><a class=bullet-link href=#x-28-23A-28-2820-29-20BASE-CHAR-20-2E-20-22PORTS-CHECKER-2FREMOTE-22-29-20PACKAGE-29></a></div></div><h4>Classes<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FREMOTE-3FClasses-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FREMOTE-3FClasses-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h4><h5>REMOTE-COMMAND-ERROR<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40PORTS-CHECKER-2FREMOTE-24REMOTE-COMMAND-ERROR-3FCLASS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-40PORTS-CHECKER-2FREMOTE-24REMOTE-COMMAND-ERROR-3FCLASS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h5><div class=reference-bullet><div class=reference-bullet-header><a class=locative-type href="https://github.com/40ants/ports-checker/blob/864af924098ebe85b38a0b28b10c001f23d01cdb/src/remote.lisp#L12">condition</a><div class=reference-object><div class=object-name><a href=#x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-20CONDITION-29 id=x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-20CONDITION-29>ports-checker/remote:remote-command-error</a></div><div class=object-args><span class=locative-args></span></div></div><a class=bullet-link href=#x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-20CONDITION-29></a></div><div class=bullet-content><p>An error reported when remote listener discovery over <code>SSH</code> fails.</p></div></div><p><b>Readers</b></p><div class=reference-bullet><div class=reference-bullet-header><a class=locative-type href="https://github.com/40ants/ports-checker/blob/864af924098ebe85b38a0b28b10c001f23d01cdb/src/remote.lisp#L12">reader</a><div class=reference-object><div class=object-name><a href=#x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-DESTINATION-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-29-29 id=x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-DESTINATION-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-29-29>ports-checker/remote:remote-command-error-destination</a></div><div class=object-args><span class=locative-args></span><span class=locative-args>(:destination)</span></div></div><a class=bullet-link href=#x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-DESTINATION-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-29-29></a></div></div><div class=reference-bullet><div class=reference-bullet-header><a class=locative-type href="https://github.com/40ants/ports-checker/blob/864af924098ebe85b38a0b28b10c001f23d01cdb/src/remote.lisp#L12">reader</a><div class=reference-object><div class=object-name><a href=#x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-STATUS-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-29-29 id=x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-STATUS-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-29-29>ports-checker/remote:remote-command-error-status</a></div><div class=object-args><span class=locative-args></span><span class=locative-args>(:status)</span></div></div><a class=bullet-link href=#x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-STATUS-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-29-29></a></div></div><div class=reference-bullet><div class=reference-bullet-header><a class=locative-type href="https://github.com/40ants/ports-checker/blob/864af924098ebe85b38a0b28b10c001f23d01cdb/src/remote.lisp#L12">reader</a><div class=reference-object><div class=object-name><a href=#x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-STDERR-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-29-29 id=x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-STDERR-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-29-29>ports-checker/remote:remote-command-error-stderr</a></div><div class=object-args><span class=locative-args></span><span class=locative-args>(:stderr)</span></div></div><a class=bullet-link href=#x-28PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-STDERR-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20PORTS-CHECKER-2FREMOTE-3AREMOTE-COMMAND-ERROR-29-29></a></div></div><h4>Functions<a class=header-link
+     href=#x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FREMOTE-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+     title="Permalink to this headline"
+     id=x-28PORTS-CHECKER-DOCS-2FINDEX-3A-3A-7C-40PORTS-CHECKER-2FREMOTE-3FFunctions-SECTION-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29></a></h4><div class=reference-bullet><div class=reference-bullet-header><a class=locative-type href="https://github.com/40ants/ports-checker/blob/864af924098ebe85b38a0b28b10c001f23d01cdb/src/remote.lisp#L77">function</a><div class=reference-object><div class=object-name><a href=#x-28PORTS-CHECKER-2FREMOTE-3ADISCOVER-PORTS-20FUNCTION-29 id=x-28PORTS-CHECKER-2FREMOTE-3ADISCOVER-PORTS-20FUNCTION-29>ports-checker/remote:discover-ports</a></div><div class=object-args><span class=locative-args>destination &amp;key ssh-user ssh-port (connect-timeout 10)</span></div></div><a class=bullet-link href=#x-28PORTS-CHECKER-2FREMOTE-3ADISCOVER-PORTS-20FUNCTION-29></a></div><div class=bullet-content><p>Return externally bound <code>TCP</code> ports reported by <code>DESTINATION</code> over <code>SSH</code>.</p><p><code>SSH-USER</code> and <code>SSH-PORT</code> select the <code>SSH</code> account and port.  <code>CONNECT-TIMEOUT</code> is
+passed to Open<code>SSH</code>.  Authentication is deliberately non-interactive.</p></div></div>
+   </div><div class=footer>
+    <hr class=separator>
+    <p class=fineprint>Created with passion by <em>40Ants</em><a class=lisp-logo
+     href="http://lisp-lang.org/">
+      <img
+           src="https://40ants.com/img/made-with-lisp.svg"></a>
+   </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Ключ для localStorage
+  const STORAGE_KEY = 'ports-checker-docs-menu-state';
+  
+  // Загружаем сохраненное состояние меню
+  function loadMenuState() {
+    try {
+      const savedState = localStorage.getItem(STORAGE_KEY);
+      return savedState ? JSON.parse(savedState) : {};
+    } catch (e) {
+      console.error('Ошибка при загрузке состояния меню:', e);
+      return {};
+    }
+  }
+  
+  // Сохраняем текущее состояние меню
+  function saveMenuState(state) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.error('Ошибка при сохранении состояния меню:', e);
+    }
+  }
+  
+  // Получаем уникальный идентификатор для пункта меню
+  function getMenuItemId(item) {
+    const link = item.querySelector('a');
+    if (!link) return null;
+    
+    // Используем текст ссылки как идентификатор
+    // Можно также использовать href, но он может меняться в зависимости от текущей страницы
+    return link.innerText.trim();
+  }
+  
+  // Загружаем сохраненное состояние
+  const menuState = loadMenuState();
+  
+  // Находим все пункты меню с подпунктами
+  const menuItems = document.querySelectorAll('.sidebar li');
+  
+  // Обрабатываем каждый пункт меню
+  menuItems.forEach(item => {
+    const subMenu = item.querySelector('ul');
+    
+    // Если у пункта есть подменю
+    if (subMenu) {
+      const itemId = getMenuItemId(item);
+      item.classList.add('has-children');
+      
+      // Восстанавливаем состояние из localStorage, если оно сохранено
+      if (itemId && menuState[itemId]) {
+        item.classList.add('expanded');
+      }
+      
+      // Добавляем обработчик клика
+      const link = item.querySelector('a');
+      if (link) {
+        link.addEventListener('click', function(e) {
+          // Останавливаем переход по ссылке только если кликнули по пункту с подменю
+          if (item.classList.contains('has-children')) {
+            e.preventDefault();
+            
+            // Переключаем класс для раскрытия/скрытия
+            item.classList.toggle('expanded');
+            
+            // Сохраняем новое состояние
+            if (itemId) {
+              if (item.classList.contains('expanded')) {
+                menuState[itemId] = true;
+              } else {
+                delete menuState[itemId];
+              }
+              saveMenuState(menuState);
+            }
+          }
+        });
+      }
+    }
+  });
+  
+  // Функция для поиска и раскрытия родителей активного пункта
+  function expandActiveItemParents() {
+    const activeItem = document.querySelector('.sidebar li.active');
+    if (activeItem) {
+      let parent = activeItem.parentElement;
+      
+      while (parent) {
+        if (parent.tagName === 'UL' && parent.parentElement && parent.parentElement.tagName === 'LI') {
+          parent.parentElement.classList.add('expanded');
+          parent.parentElement.classList.add('active-parent');
+          
+          // Сохраняем состояние активного родителя
+          const parentItem = parent.parentElement;
+          const parentId = getMenuItemId(parentItem);
+          if (parentId) {
+            menuState[parentId] = true;
+          }
+        }
+        parent = parent.parentElement;
+      }
+      
+      // Сохраняем обновленное состояние после раскрытия активных родителей
+      saveMenuState(menuState);
+    }
+  }
+  
+  // Запускаем функцию для текущей страницы
+  expandActiveItemParents();
+});
+</script>
+
+
+  </div>
+ </body>
+</html>
