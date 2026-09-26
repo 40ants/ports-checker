@@ -51,7 +51,7 @@
         },
         {
           "name": "Run Linter",
-          "run": "qlot exec 40ants-linter --system \"ports-checker, ports-checker-docs, ports-checker-tests\"",
+          "run": "qlot exec 40ants-linter --system \"ports-checker, ports-checker-docs, ports-checker-tests\" --imports",
           "shell": "bash"
         }
       ]

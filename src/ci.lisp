@@ -16,6 +16,7 @@
   :on-pull-request t
   :cache t
   :jobs ((40ants-ci/jobs/linter:linter
+          :check-imports t
           :asdf-systems ("ports-checker"
                          "ports-checker-docs"
                          "ports-checker-tests"))))
